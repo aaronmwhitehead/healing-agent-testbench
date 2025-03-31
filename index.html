@@ -85,8 +85,7 @@
   </div>
 
   <script>
-    const form = document.getElementById("form");
-    const mainContent = document.getElementById("mainContent");
+    const formContainer = document.getElementById("mainContent");
     const loadingMessage = document.getElementById("loadingMessage");
     const popupOverlay = document.getElementById("popupOverlay");
     const confirmation = document.getElementById("confirmation");
@@ -100,32 +99,70 @@
     }
 
     function simulateSlowLoad() {
-      mainContent.classList.add("hidden");
+      formContainer.innerHTML = "";
       loadingMessage.classList.remove("hidden");
       setTimeout(() => {
         loadingMessage.classList.add("hidden");
-        mainContent.classList.remove("hidden");
-      }, 5000); // simulate 5 second load
+        const newForm = document.createElement("form");
+        newForm.id = "form";
+        newForm.onsubmit = handleSubmit;
+
+        const label = document.createElement("label");
+        label.setAttribute("for", "email");
+        label.textContent = "Email:";
+
+        const input = document.createElement("input");
+        input.type = "email";
+        input.id = "email";
+        input.placeholder = "Enter your email";
+        input.required = true;
+
+        const submitBtn = document.createElement("button");
+        submitBtn.id = "submitBtn";
+        submitBtn.textContent = "Submit";
+
+        newForm.appendChild(label);
+        newForm.appendChild(input);
+        newForm.appendChild(document.createElement("br"));
+        newForm.appendChild(document.createElement("br"));
+        newForm.appendChild(submitBtn);
+
+        formContainer.appendChild(newForm);
+        formContainer.appendChild(confirmation);
+      }, 5000);
     }
 
     function renameButton() {
       const submitBtn = document.getElementById("submitBtn");
-      submitBtn.textContent = "Proceed";
+      submitBtn.textContent = "Go!";
+      submitBtn.removeAttribute("id");
+      submitBtn.setAttribute("data-action", "confirm-submit");
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("wrapper");
+      submitBtn.parentNode.replaceChild(wrapper, submitBtn);
+      wrapper.appendChild(submitBtn);
     }
 
     function moveElement() {
       const field = document.getElementById("email");
       const label = document.querySelector("label[for='email']");
-      const button = document.getElementById("submitBtn");
-      const newContainer = document.createElement("div");
-      newContainer.style.border = "1px solid gray";
-      newContainer.style.padding = "10px";
-      newContainer.id = "newContainer";
-      newContainer.appendChild(label);
-      newContainer.appendChild(field);
-      newContainer.appendChild(button);
+      const submitBtn = document.querySelector("button[data-action='confirm-submit']") || document.getElementById("submitBtn");
+
+      const section = document.createElement("section");
+      section.className = "field-container";
+
+      const altLabel = document.createElement("p");
+      altLabel.textContent = "Your contact email:";
+
+      const fieldWrapper = document.createElement("div");
+      fieldWrapper.appendChild(altLabel);
+      fieldWrapper.appendChild(field);
+
+      const form = document.getElementById("form");
       form.innerHTML = "";
-      form.appendChild(newContainer);
+      section.appendChild(fieldWrapper);
+      section.appendChild(submitBtn);
+      form.appendChild(section);
     }
 
     function resetPage() {
@@ -137,7 +174,6 @@
       confirmation.classList.remove("hidden");
     }
 
-    // Ensure popup is hidden on initial load
     popupOverlay.classList.remove("show");
   </script>
 </body>
