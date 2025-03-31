@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Healing Agent Testbench</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    .hidden {
+      display: none;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .overlay.show {
+      display: flex;
+    }
+    .popup {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      z-index: 10000;
+    }
+    #loadingMessage {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    #form button {
+      margin-top: 10px;
+    }
+    #confirmation {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Healing Agent Testbench</h1>
+
+  <div>
+    <button onclick="showPopup()">Trigger Popup</button>
+    <button onclick="simulateSlowLoad()">Simulate Slow Loading</button>
+    <button onclick="renameButton()">Rename Submit Button</button>
+    <button onclick="moveElement()">Move Field to New Container</button>
+    <button onclick="resetPage()">Reset Page</button>
+  </div>
+
+  <div id="loadingMessage" class="hidden">Loading data, please wait...</div>
+
+  <div id="mainContent">
+    <form id="form" onsubmit="handleSubmit(event)">
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter your email" required />
+      <br /><br />
+      <button id="submitBtn">Submit</button>
+    </form>
+    <div id="confirmation" class="hidden">Form submitted successfully!</div>
+  </div>
+
+  <!-- Overlay Popup -->
+  <div id="popupOverlay" class="overlay">
+    <div class="popup">
+      <p>This is an annoying popup!</p>
+      <button onclick="closePopup()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("form");
+    const mainContent = document.getElementById("mainContent");
+    const loadingMessage = document.getElementById("loadingMessage");
+    const popupOverlay = document.getElementById("popupOverlay");
+    const confirmation = document.getElementById("confirmation");
+
+    function showPopup() {
+      popupOverlay.classList.add("show");
+    }
+
+    function closePopup() {
+      popupOverlay.classList.remove("show");
+    }
+
+    function simulateSlowLoad() {
+      mainContent.classList.add("hidden");
+      loadingMessage.classList.remove("hidden");
+      setTimeout(() => {
+        loadingMessage.classList.add("hidden");
+        mainContent.classList.remove("hidden");
+      }, 5000); // simulate 5 second load
+    }
+
+    function renameButton() {
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.textContent = "Proceed";
+    }
+
+    function moveElement() {
+      const field = document.getElementById("email");
+      const label = document.querySelector("label[for='email']");
+      const button = document.getElementById("submitBtn");
+      const newContainer = document.createElement("div");
+      newContainer.style.border = "1px solid gray";
+      newContainer.style.padding = "10px";
+      newContainer.id = "newContainer";
+      newContainer.appendChild(label);
+      newContainer.appendChild(field);
+      newContainer.appendChild(button);
+      form.innerHTML = "";
+      form.appendChild(newContainer);
+    }
+
+    function resetPage() {
+      window.location.reload();
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      confirmation.classList.remove("hidden");
+    }
+
+    // Ensure popup is hidden on initial load
+    popupOverlay.classList.remove("show");
+  </script>
+</body>
+</html>
